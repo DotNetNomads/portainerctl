@@ -13,10 +13,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="Command\Stack\StackDeployCmd.cs" />
-      <Compile Remove="Command\Stack\StackGetFileCmd.cs" />
-      <Compile Remove="Command\Stack\StackInspectCmd.cs" />
-      <Compile Remove="Command\Stack\StackRmCmd.cs" />
       <Compile Remove="Command\Stack\StackUpdateCmd.cs" />
     </ItemGroup>
 

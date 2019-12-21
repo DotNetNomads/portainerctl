@@ -5,14 +5,12 @@ using PortainerClient.Helpers;
 namespace PortainerClient.Command
 {
     [Command(Name = "stack", Description = "Docker Stack management commands")]
-    [Subcommand(
-        typeof(StackLsCmd)
-//        , 
-//        typeof(StackGetFileCmd),
+    [Subcommand(typeof(StackLsCmd),
+        typeof(StackGetFileCmd),
 //        typeof(StackDeployCmd),
 //        typeof(StackUpdateCmd),
-//        typeof(StackRmCmd),
-//        typeof(StackInspectCmd)
+        typeof(StackRmCmd),
+        typeof(StackInspectCmd)
     )]
     public class StackCmd : ICommand
     {

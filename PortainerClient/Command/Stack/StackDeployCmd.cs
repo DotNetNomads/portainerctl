@@ -1,15 +1,14 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
-using IO.Swagger.Api;
 using McMaster.Extensions.CommandLineUtils;
-using Newtonsoft.Json;
 using PortainerClient.Helpers;
+using RestSharp;
 
 namespace PortainerClient.Command.Stack
 {
     [Command("deploy", "Deploy new Swarm stack from file")]
-    public class StackDeployCmd : BaseApiCommand<StacksApi>
+    public class StackDeployCmd : BaseApiCommand<StacksApiService>
     {
         [Option("--file", "Docker Swarm stack definition file path", CommandOptionType.SingleValue, ShortName = "f")]
         [Required]
@@ -42,14 +41,13 @@ namespace PortainerClient.Command.Stack
             }
 
             var stackEnvs = CmdHelpers.ParseEnvs(Envs);
-
-            var fileStream = File.OpenRead(FilePath);
             // 1 - swarm stack
             console.WriteLine("Sending deploy request to Portainer...");
-            var result = ApiClient.StackCreate(type: 1, method: "file", endpointId: EndpointId, body: null,
+            var result = ApiClient.DeployStack(endpointId: EndpointId,
                 name: StackName,
-                endpointID: EndpointId.ToString(), swarmID: SwarmId, file: fileStream,
-                env: JsonConvert.SerializeObject(stackEnvs));
+                swarmID: SwarmId,
+                stackFilePath: FilePath,
+                env: SimpleJson.SerializeObject(stackEnvs));
             console.WriteLine("Stack deployed.");
         }
     }

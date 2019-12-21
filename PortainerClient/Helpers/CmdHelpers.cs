@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using McMaster.Extensions.CommandLineUtils;
+using PortainerClient.Api.Model;
 
 namespace PortainerClient.Helpers
 {
@@ -20,24 +21,22 @@ namespace PortainerClient.Helpers
             return 1;
         }
 
-//        public static List<StackEnv> ParseEnvs(string[] envs)
-//        {
-//            var stackEnvs = new List<StackEnv>();
-//            if (envs != null)
-//            {
-//                foreach (var env in envs)
-//                {
-//                    if (!env.Contains("="))
-//                    {
-//                        throw new Exception($"Incorrect env var format: {env}");
-//                    }
-//
-//                    var splited = env.Split("=", 2);
-//                    stackEnvs.Add(new StackEnv {Name = splited[0], Value = splited[1]});
-//                }
-//            }
-//
-//            return stackEnvs;
-//        }
+        public static List<StackEnv> ParseEnvs(string[] envs)
+        {
+            var stackEnvs = new List<StackEnv>();
+            if (envs == null) return stackEnvs;
+            foreach (var env in envs)
+            {
+                if (!env.Contains("="))
+                {
+                    throw new Exception($"Incorrect env var format: {env}");
+                }
+
+                var splited = env.Split("=", 2);
+                stackEnvs.Add(new StackEnv {Name = splited[0], Value = splited[1]});
+            }
+
+            return stackEnvs;
+        }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using PortainerClient.Api.Model;
 using PortainerClient.Helpers;
 using RestSharp;
 using RestSharp.Authenticators;
@@ -22,14 +23,31 @@ namespace PortainerClient.Api
         protected T Get<T>(string resource, params (string paramName, object paramValue)[] parameters) where T : new()
         {
             var request = new RestRequest(resource, Method.GET);
-            foreach (var (paramName, paramValue) in parameters) request.AddParameter(paramName, paramValue);
+            request.AddParameters(parameters);
             var response = ResolveClient().Execute<T>(request);
-            if (!response.IsSuccessful)
+            if (response.IsSuccessful) return response.Data;
+            throw ParseError(resource, response.Content);
+        }
+
+        protected void Delete(string resource, params (string paramName, object paramValue)[] parameters)
+        {
+            var request = new RestRequest(resource, Method.DELETE);
+            request.AddParameters(parameters);
+            var response = ResolveClient().Execute(request);
+            if (response.IsSuccessful) return;
+            throw ParseError(resource, response.Content);
+        }
+
+        private static InvalidOperationException ParseError(string resource, string responseData)
+        {
+            ApiError errorInfo = null;
+            if (responseData != null)
             {
-                throw new InvalidOperationException($"Request {resource} error: {response.Content}");
+                errorInfo = SimpleJson.DeserializeObject<ApiError>(responseData);
             }
 
-            return response.Data;
+            return new InvalidOperationException(
+                $"Request {resource}: {(errorInfo != null ? $"{errorInfo.message}, details: {errorInfo.details}" : "no information")}");
         }
     }
 }

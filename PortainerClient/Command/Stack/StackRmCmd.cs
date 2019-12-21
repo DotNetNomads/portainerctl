@@ -1,11 +1,10 @@
 using System.ComponentModel.DataAnnotations;
-using IO.Swagger.Api;
 using McMaster.Extensions.CommandLineUtils;
 
 namespace PortainerClient.Command.Stack
 {
     [Command("rm", Description = "Remove stack from portainer and Docker Swarm")]
-    public class StackRmCmd : BaseApiCommand<StacksApi>
+    public class StackRmCmd : BaseApiCommand<StacksApiService>
     {
         [Argument(0, "stackId", "Stack identifier")]
         [Required]
@@ -21,7 +20,7 @@ namespace PortainerClient.Command.Stack
             }
 
             console.Write("Sending remove request to Portainer...");
-            ApiClient.StackDelete(StackId, null, null);
+            ApiClient.RemoveStack(StackId);
             console.WriteLine("Removed!");
         }
     }
