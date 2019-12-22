@@ -1,6 +1,8 @@
 ﻿using System;
 using McMaster.Extensions.CommandLineUtils;
 using PortainerClient.Command;
+using PortainerClient.Command.Auth;
+using PortainerClient.Command.Stack;
 using PortainerClient.Helpers;
 
 namespace PortainerClient

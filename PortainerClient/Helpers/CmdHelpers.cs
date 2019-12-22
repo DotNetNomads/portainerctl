@@ -5,8 +5,17 @@ using PortainerClient.Api.Model;
 
 namespace PortainerClient.Helpers
 {
+    /// <summary>
+    /// Helpers for CMD
+    /// </summary>
     public static class CmdHelpers
     {
+        /// <summary>
+        /// Returns message when user is not typed a subcommand
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="console"></param>
+        /// <returns></returns>
         public static int SpecifyCommandResult(CommandLineApplication app, IConsole console)
         {
             console.WriteLine("You must specify at a subcommand.");
@@ -14,6 +23,12 @@ namespace PortainerClient.Helpers
             return 1;
         }
 
+        /// <summary>
+        /// Writes error to user's console
+        /// </summary>
+        /// <param name="console"></param>
+        /// <param name="exception"></param>
+        /// <returns></returns>
         public static int WriteError(this IConsole console, Exception exception)
         {
             console.BackgroundColor = ConsoleColor.Red;
@@ -21,6 +36,12 @@ namespace PortainerClient.Helpers
             return 1;
         }
 
+        /// <summary>
+        /// Parses environment variables from console input
+        /// </summary>
+        /// <param name="envs"></param>
+        /// <returns>List of envs</returns>
+        /// <exception cref="Exception">Occurs when env has incorrect format</exception>
         public static List<StackEnv> ParseEnvs(string[] envs)
         {
             var stackEnvs = new List<StackEnv>();

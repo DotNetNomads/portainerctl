@@ -4,29 +4,36 @@ using System.Net;
 using McMaster.Extensions.CommandLineUtils;
 using PortainerClient.Api.Model;
 using PortainerClient.Config;
-using PortainerClient.Helpers;
 using RestSharp;
 
-namespace PortainerClient.Command
+namespace PortainerClient.Command.Auth
 {
+    /// <summary>
+    /// CMD command for authorization
+    /// </summary>
     [Command(Name = "auth", Description = "Authorize this client in Portainer (required before using)")]
     public class AuthCmd : ICommand
     {
+        /// <summary>
+        /// Portainer instance URL
+        /// </summary>
         [Option("--url", "Portainer url", CommandOptionType.SingleValue)]
         [Required]
         public string PortainerUrl { get; set; }
 
+        /// <summary>
+        /// User's name
+        /// </summary>
         [Option("--user", "User name", CommandOptionType.SingleValue)]
         [Required]
         public string User { get; set; }
 
+        /// <summary>
+        /// Password
+        /// </summary>
         [Option("--password", "Password", CommandOptionType.SingleValue)]
         [Required]
         public string Password { get; set; }
-
-        public AuthCmd()
-        {
-        }
 
         private static void Authorize(string url, string user, string password)
         {
@@ -56,6 +63,7 @@ namespace PortainerClient.Command
             configModel.Save();
         }
 
+        /// <inheritdoc />
         public int OnExecute(CommandLineApplication app, IConsole console)
         {
             try

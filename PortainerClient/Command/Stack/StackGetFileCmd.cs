@@ -1,16 +1,24 @@
 using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
+using PortainerClient.Api;
 
 namespace PortainerClient.Command.Stack
 {
+    /// <summary>
+    /// CMD command for Stack file inspect operation
+    /// </summary>
     [Command(Name = "getfile", Description = "Get compose file of stack")]
     public class StackGetFileCmd : BaseApiCommand<StacksApiService>
     {
+        /// <summary>
+        /// Stack identifier
+        /// </summary>
         [Argument(0, "stackId", "Stack instance identifier")]
         [Required]
         public int StackId { get; set; }
 
-        public override void Do(CommandLineApplication app, IConsole console)
+        /// <inheritdoc />
+        protected override void Do(CommandLineApplication app, IConsole console)
         {
             var data = ApiClient.GetStackFile(StackId);
             console.Write(data);

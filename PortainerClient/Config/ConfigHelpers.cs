@@ -5,6 +5,9 @@ using RestSharp;
 
 namespace PortainerClient.Config
 {
+    /// <summary>
+    /// Helpers for configuration model
+    /// </summary>
     public static class ConfigHelpers
     {
         private static string ConfigFilePath { get; } =
@@ -14,6 +17,10 @@ namespace PortainerClient.Config
 
         private static ConfigModel _currentConfigModel;
 
+        /// <summary>
+        /// Saves configuration to file
+        /// </summary>
+        /// <param name="config">Configuration instance</param>
         public static void Save(this ConfigModel config)
         {
             var jsonText = SimpleJson.SerializeObject(config);
@@ -21,11 +28,16 @@ namespace PortainerClient.Config
             _currentConfigModel = config;
         }
 
+        /// <summary>
+        /// Loads configuration from file
+        /// </summary>
+        /// <returns>Configuration model instance</returns>
+        /// <exception cref="Exception">Occurs when configuration file is not found</exception>
         public static ConfigModel Load()
         {
             if (_currentConfigModel != null)
                 return _currentConfigModel;
-            
+
             if (!File.Exists(ConfigFilePath))
                 throw new Exception(
                     "Configuration file is not found. Before execute any command you should to authorize first.");
