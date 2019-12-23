@@ -1,5 +1,5 @@
 # PortainerClient (portainerctl)
-License: MIT
+License: MIT  
 Console client for the Portainer written in C# :)
 ## Main information
 Uses Portainer's API as described [here](https://app.swaggerhub.com/apis/deviantony/Portainer/1.23.0/).
