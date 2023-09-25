@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using McMaster.Extensions.CommandLineUtils;
 using PortainerClient.Api;
 
@@ -21,6 +22,7 @@ namespace PortainerClient.Command.Stack
         protected override void Do(CommandLineApplication app, IConsole console)
         {
             var data = ApiClient.GetStackFile(StackId);
+            Debug.Assert(data != null, nameof(data) + " != null");
             console.Write(data);
         }
     }

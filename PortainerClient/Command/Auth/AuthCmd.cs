@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Net;
 using McMaster.Extensions.CommandLineUtils;
 using PortainerClient.Api.Model;
@@ -19,29 +20,29 @@ namespace PortainerClient.Command.Auth
         /// </summary>
         [Option("--url", "Portainer url", CommandOptionType.SingleValue)]
         [Required]
-        public string PortainerUrl { get; set; }
+        public string PortainerUrl { get; set; } = null!;
 
         /// <summary>
         /// User's name
         /// </summary>
         [Option("--user", "User name", CommandOptionType.SingleValue)]
         [Required]
-        public string User { get; set; }
+        public string User { get; set; } = null!;
 
         /// <summary>
         /// Password
         /// </summary>
         [Option("--password", "Password", CommandOptionType.SingleValue)]
         [Required]
-        public string Password { get; set; }
+        public string Password { get; set; } = null!;
 
         private static void Authorize(string url, string user, string password)
         {
             var client = new RestClient(url + "/api");
-            IRestResponse<TokenInfo> tokenInfoResponse;
+            RestResponse<TokenInfo> tokenInfoResponse;
             try
             {
-                var request = new RestRequest("auth", Method.POST, DataFormat.Json);
+                var request = new RestRequest("auth", Method.Post);
                 request.AddJsonBody(new AuthInfo {Username = user, Password = password});
                 tokenInfoResponse = client.Execute<TokenInfo>(request);
             }
@@ -55,6 +56,7 @@ namespace PortainerClient.Command.Auth
                 throw new Exception($"Authorization error. Detailed message: {tokenInfoResponse.Content}");
             }
 
+            Debug.Assert(tokenInfoResponse.Data != null, "tokenInfoResponse.Data != null");
             var configModel = new ConfigModel
             {
                 Url = url + "/api",

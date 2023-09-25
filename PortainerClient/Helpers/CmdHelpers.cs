@@ -42,7 +42,7 @@ namespace PortainerClient.Helpers
         /// <param name="envs"></param>
         /// <returns>List of envs</returns>
         /// <exception cref="Exception">Occurs when env has incorrect format</exception>
-        public static List<StackEnv> ParseEnvs(string[] envs)
+        public static List<StackEnv> ParseEnvs(string[]? envs)
         {
             var stackEnvs = new List<StackEnv>();
             if (envs == null) return stackEnvs;

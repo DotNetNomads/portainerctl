@@ -8,11 +8,11 @@ namespace PortainerClient.Config
         /// <summary>
         /// Portainer's URL
         /// </summary>
-        public string Url { get; set; }
+        public string? Url { get; set; }
         /// <summary>
         /// JWT token (portainerctl auth)
         /// </summary>
-        public string Token { get; set; }
+        public string? Token { get; set; }
 
         /// <summary>
         /// Load configuration from configuration file

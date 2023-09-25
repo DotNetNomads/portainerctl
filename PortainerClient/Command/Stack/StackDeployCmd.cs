@@ -18,7 +18,7 @@ namespace PortainerClient.Command.Stack
         /// </summary>
         [Option("--file", "Docker Swarm stack definition file path", CommandOptionType.SingleValue, ShortName = "f")]
         [Required]
-        public string FilePath { get; set; }
+        public string FilePath { get; set; } = null!;
 
         /// <summary>
         /// Endpoint identifier
@@ -33,7 +33,7 @@ namespace PortainerClient.Command.Stack
         /// </summary>
         [Option("--swarm-id", "Swarm cluster id", CommandOptionType.SingleValue, ShortName = "sid")]
         [Required]
-        public string SwarmId { get; set; }
+        public string SwarmId { get; set; } = null!;
 
         /// <summary>
         /// List of environment variables
@@ -41,14 +41,14 @@ namespace PortainerClient.Command.Stack
         [Option("--env",
             "Environment variable used in definition file (format -e NAME1=VALUE1 -e NAME2=VALUE2 -e ...) (optional)",
             CommandOptionType.MultipleValue, ShortName = "e")]
-        public string[] Envs { get; set; }
+        public string[]? Envs { get; set; }
 
         /// <summary>
         /// Stack name
         /// </summary>
         [Argument(0, "stackName", "Name for new stack")]
         [Required]
-        public string StackName { get; set; }
+        public string StackName { get; set; } = null!;
 
 
         /// <inheritdoc />

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text.Json;
 using PortainerClient.Helpers;
 using RestSharp;
 
@@ -15,7 +16,7 @@ namespace PortainerClient.Config
                 Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                 Consts.ConfigFileName);
 
-        private static ConfigModel _currentConfigModel;
+        private static ConfigModel? _currentConfigModel;
 
         /// <summary>
         /// Saves configuration to file
@@ -23,7 +24,7 @@ namespace PortainerClient.Config
         /// <param name="config">Configuration instance</param>
         public static void Save(this ConfigModel config)
         {
-            var jsonText = SimpleJson.SerializeObject(config);
+            var jsonText = JsonSerializer.Serialize(config);
             File.WriteAllText(ConfigFilePath, jsonText);
             _currentConfigModel = config;
         }
@@ -43,7 +44,8 @@ namespace PortainerClient.Config
                     "Configuration file is not found. Before execute any command you should to authorize first.");
 
             var jsonText = File.ReadAllText(ConfigFilePath);
-            return _currentConfigModel ??= SimpleJson.DeserializeObject<ConfigModel>(jsonText);
+            _currentConfigModel = JsonSerializer.Deserialize<ConfigModel>(jsonText);
+            return _currentConfigModel ?? throw new InvalidOperationException("Config model is empty");
         }
     }
 }

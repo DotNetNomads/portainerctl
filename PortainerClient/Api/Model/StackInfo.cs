@@ -11,11 +11,11 @@ namespace PortainerClient.Api.Model
         /// <summary>
         /// Stack id in portainer
         /// </summary>
-        public string Id { get; set; }
+        public string? Id { get; set; }
         /// <summary>
         /// Stack name
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
         /// <summary>
         /// Type of stack
         /// </summary>
@@ -27,18 +27,18 @@ namespace PortainerClient.Api.Model
         /// <summary>
         /// Stack file location
         /// </summary>
-        public string EntryPoint { get; set; }
+        public string? EntryPoint { get; set; }
         /// <summary>
         /// Swarm identifier in Portainer where the stack is deployed
         /// </summary>
-        public string SwarmId { get; set; }
+        public string? SwarmId { get; set; }
         /// <summary>
         /// Path on disk to the repository that hosts the stack file
         /// </summary>
-        public string ProjectPath { get; set; }
+        public string? ProjectPath { get; set; }
         /// <summary>
         /// List of environment variables for the stack
         /// </summary>
-        public IEnumerable<StackEnv> Env { get; set; }
+        public IEnumerable<StackEnv>? Env { get; set; }
     }
 }

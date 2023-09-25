@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.Json;
 using PortainerClient.Api.Base;
 using PortainerClient.Api.Model;
 using RestSharp;
@@ -21,7 +22,7 @@ namespace PortainerClient.Api
         /// </summary>
         /// <param name="stackId">Stack identifier</param>
         /// <returns>Stack file content</returns>
-        public string GetStackFile(int stackId) => Get<StackFileInspect>($"stacks/{stackId}/file").StackFileContent;
+        public string? GetStackFile(int stackId) => Get<StackFileInspect>($"stacks/{stackId}/file").StackFileContent;
 
         /// <summary>
         /// Get information about a stack
@@ -54,7 +55,7 @@ namespace PortainerClient.Api
                 ("Name", name, ParamType.BodyParam),
                 ("EndpointID", endpointId, ParamType.BodyParam),
                 ("SwarmID", swarmId, ParamType.BodyParam),
-                ("Env", SimpleJson.SerializeObject(env), ParamType.BodyParam),
+                ("Env", JsonSerializer.Serialize(env), ParamType.BodyParam),
                 ("file", stackFilePath, ParamType.File)
             );
 
