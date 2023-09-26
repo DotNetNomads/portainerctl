@@ -8,6 +8,6 @@ namespace PortainerClient.Api.Model
         /// <summary>
         /// Stack file content (as string)
         /// </summary>
-        public string StackFileContent { get; set; }
+        public string? StackFileContent { get; set; }
     }
 }

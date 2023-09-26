@@ -8,10 +8,10 @@ namespace PortainerClient.Api.Model
         /// <summary>
         /// Message about occured error
         /// </summary>
-        public string message { get; set; }
+        public string? message { get; set; }
         /// <summary>
         /// Occured error details
         /// </summary>
-        public string details { get; set; }
+        public string? details { get; set; }
     }
 }

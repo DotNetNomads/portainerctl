@@ -42,9 +42,9 @@ namespace PortainerClient.Helpers
         /// <param name="envs"></param>
         /// <returns>List of envs</returns>
         /// <exception cref="Exception">Occurs when env has incorrect format</exception>
-        public static List<StackEnv> ParseEnvs(string[] envs)
+        public static List<Env> ParseEnvs(string[]? envs)
         {
-            var stackEnvs = new List<StackEnv>();
+            var stackEnvs = new List<Env>();
             if (envs == null) return stackEnvs;
             foreach (var env in envs)
             {
@@ -54,7 +54,7 @@ namespace PortainerClient.Helpers
                 }
 
                 var splited = env.Split("=", 2);
-                stackEnvs.Add(new StackEnv {Name = splited[0], Value = splited[1]});
+                stackEnvs.Add(new Env {Name = splited[0], Value = splited[1]});
             }
 
             return stackEnvs;

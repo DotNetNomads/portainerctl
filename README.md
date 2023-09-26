@@ -2,10 +2,10 @@
 License: MIT  
 Console client for the Portainer written in C# :)
 ## Main information
-Uses Portainer's API as described [here](https://app.swaggerhub.com/apis/deviantony/Portainer/1.23.0/).
+Uses Portainer's API as described [here](https://app.swaggerhub.com/apis/portainer/portainer-ce/2.19.1#/).
 
 How to use?
-Just pull the docker image [dotnetnomads/portainerctl](https://hub.docker.com/r/dotnetnomads/portainerctl)  and enjoy.
+Just pull the docker image binalirustamov/portainerctl:2.19.10  and enjoy.
 
 Can be used in CI/CD.  For example in stack deployment stage.
 

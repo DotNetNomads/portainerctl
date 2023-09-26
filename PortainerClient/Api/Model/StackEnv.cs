@@ -8,10 +8,10 @@ namespace PortainerClient.Api.Model
         /// <summary>
         /// Environment variable name
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
         /// <summary>
         /// Environment variable value
         /// </summary>
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 }

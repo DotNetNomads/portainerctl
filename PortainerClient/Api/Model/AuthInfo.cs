@@ -8,10 +8,10 @@ namespace PortainerClient.Api.Model
         /// <summary>
         /// User's login
         /// </summary>
-        public string Username { get; set; }
+        public string? Username { get; set; }
         /// <summary>
         /// User's password
         /// </summary>
-        public string Password { get; set; }
+        public string? Password { get; set; }
     }
 }

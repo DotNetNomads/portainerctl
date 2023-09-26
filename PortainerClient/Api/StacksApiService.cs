@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.Json;
 using PortainerClient.Api.Base;
 using PortainerClient.Api.Model;
 using RestSharp;
@@ -14,14 +15,17 @@ namespace PortainerClient.Api
         /// Get all stacks
         /// </summary>
         /// <returns>List of available stacks</returns>
-        public IEnumerable<StackInfo> GetStacks() => Get<List<StackInfo>>("stacks");
+        public IEnumerable<StackInfo> GetStacks(bool debug = false) =>
+            Get<List<StackInfo>>("stacks", debug, ("filter", ""));
 
         /// <summary>
         /// Get file content for a stack
         /// </summary>
         /// <param name="stackId">Stack identifier</param>
+        /// <param name="debug"></param>
         /// <returns>Stack file content</returns>
-        public string GetStackFile(int stackId) => Get<StackFileInspect>($"stacks/{stackId}/file").StackFileContent;
+        public string? GetStackFile(int stackId, bool debug = false) =>
+            Get<StackFileInspect>($"stacks/{stackId}/file", debug).StackFileContent;
 
         /// <summary>
         /// Get information about a stack
@@ -44,18 +48,17 @@ namespace PortainerClient.Api
         /// <param name="swarmId">Swarm identifier where to deploy a stack</param>
         /// <param name="stackFilePath">Path to stack deployment file</param>
         /// <param name="env">List of the stack envs</param>
+        /// <param name="debug">Print content of request and response</param>
         /// <returns>StackInfo instance for newly deployed stack</returns>
         public StackInfo DeployStack(int endpointId, string name, string swarmId, string stackFilePath,
-            List<StackEnv> env) =>
-            Post<StackInfo>("stacks",
-                ("type", "1", ParamType.QueryParam),
-                ("method", "file", ParamType.QueryParam),
+            List<Env> env, bool debug = false) =>
+            Post<StackInfo>("stacks/create/swarm/file",
+                debug,
                 ("endpointId", endpointId, ParamType.QueryParam),
-                ("Name", name, ParamType.BodyParam),
-                ("EndpointID", endpointId, ParamType.BodyParam),
+                ("file", stackFilePath, ParamType.File),
                 ("SwarmID", swarmId, ParamType.BodyParam),
-                ("Env", SimpleJson.SerializeObject(env), ParamType.BodyParam),
-                ("file", stackFilePath, ParamType.File)
+                ("Name", name, ParamType.BodyParam),
+                ("Env", JsonSerializer.Serialize(env), ParamType.BodyParam)
             );
 
         /// <summary>
@@ -66,17 +69,20 @@ namespace PortainerClient.Api
         /// <param name="fileContent">Deploy file content</param>
         /// <param name="prune">Prune unnecessary services</param>
         /// <param name="endpointId">Endpoint identifier where to update a stack</param>
+        /// <param name="pullImage"></param>
         /// <returns>StackInfo instance for updated stack</returns>
-        public StackInfo UpdateStack(int stackId, List<StackEnv> envs, string fileContent, bool prune,
-            int endpointId)
+        public StackInfo UpdateStack(int stackId, List<Env> envs, string fileContent, bool prune,
+            int endpointId, bool pullImage, bool debug)
         {
             return Put<StackInfo>($"stacks/{stackId}",
+                debug,
                 ("endpointId", endpointId, ParamType.QueryParam),
                 (null, new
                 {
                     StackFileContent = fileContent,
                     Env = envs,
-                    Prune = prune
+                    Prune = prune,
+                    PullImage = pullImage
                 }, ParamType.JsonBody));
         }
     }

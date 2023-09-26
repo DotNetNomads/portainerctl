@@ -7,7 +7,7 @@ using PortainerClient.Helpers;
 
 namespace PortainerClient
 {
-    [Command("portainerctl", Description = "Console client for Portainer (>= 1.18.0) by DotNetNomads :)")]
+    [Command("portainerctl", Description = "Console client for Portainer (2.19.x) by DotNetNomads :)")]
     [Subcommand(typeof(AuthCmd), typeof(StackCmd))]
     [HelpOption]
     class Program : ICommand
