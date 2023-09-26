@@ -44,7 +44,7 @@ namespace PortainerClient.Api.Base
                             value.ToString());
                         break;
                     case ParamType.BodyParam:
-                        request.AddParameter(paramName, value, ParameterType.RequestBody);
+                        request.AddParameter(paramName, value, ParameterType.GetOrPost);
                         break;
                     case ParamType.JsonBody:
                         request.RequestFormat = DataFormat.Json;

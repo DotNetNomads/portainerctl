@@ -5,6 +5,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <LangVersion>default</LangVersion>
     <PublishTrimmed>true</PublishTrimmed>
+    <InvariantGlobalization>true</InvariantGlobalization>
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

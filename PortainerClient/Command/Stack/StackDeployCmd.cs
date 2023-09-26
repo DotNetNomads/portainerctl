@@ -36,6 +36,12 @@ namespace PortainerClient.Command.Stack
         public string SwarmId { get; set; } = null!;
 
         /// <summary>
+        /// Print content of request and response
+        /// </summary>
+        [Option("--debug")]
+        public bool Debug { get; set; }
+
+        /// <summary>
         /// List of environment variables
         /// </summary>
         [Option("--env",
@@ -62,11 +68,12 @@ namespace PortainerClient.Command.Stack
             var stackEnvs = CmdHelpers.ParseEnvs(Envs);
             // 1 - swarm stack
             console.WriteLine("Sending deploy request to Portainer...");
-            var result = ApiClient.DeployStack(endpointId: EndpointId,
+            ApiClient.DeployStack(endpointId: EndpointId,
                 StackName,
                 SwarmId,
                 FilePath,
-                stackEnvs);
+                stackEnvs,
+                Debug);
             console.WriteLine("Stack deployed.");
         }
     }
