@@ -1,8 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
 using McMaster.Extensions.CommandLineUtils;
 using PortainerClient.Api;
+using PortainerClient.Config;
 using PortainerClient.Helpers;
 
 namespace PortainerClient.Command.Stack
@@ -18,22 +18,14 @@ namespace PortainerClient.Command.Stack
         /// </summary>
         [Option("--file", "Docker Swarm stack definition file path", CommandOptionType.SingleValue, ShortName = "f")]
         [Required]
-        public string FilePath { get; set; } = null!;
+        public string? FilePath { get; set; } = null!;
 
         /// <summary>
-        /// Endpoint identifier
+        /// Cluster name
         /// </summary>
-        [Option("--endpoint-id", "ID of endpoint used to deploy (get it from Portainer)",
-            CommandOptionType.SingleValue, ShortName = "eid")]
+        [Option("--cluster", "Name of the cluster in Portainer UI", CommandOptionType.SingleValue)]
         [Required]
-        public int EndpointId { get; set; }
-
-        /// <summary>
-        /// Swarm identifier
-        /// </summary>
-        [Option("--swarm-id", "Swarm cluster id", CommandOptionType.SingleValue, ShortName = "sid")]
-        [Required]
-        public string SwarmId { get; set; } = null!;
+        public string ClusterName { get; set; } = null!;
 
         /// <summary>
         /// Print content of request and response
@@ -57,23 +49,35 @@ namespace PortainerClient.Command.Stack
         public string StackName { get; set; } = null!;
 
 
+        /// <summary>
+        /// Read stack file from STDIN
+        /// </summary>
+        [Option("--in",
+            "Read updated stack definition file from stdin, can be used as an alternative to --file (optional)",
+            CommandOptionType.NoValue, ShortName = "i")]
+        public bool? FileFromStdin { get; set; } = false;
+
+
         /// <inheritdoc />
         protected override void Do(CommandLineApplication app, IConsole console)
         {
-            if (!File.Exists(FilePath))
-            {
-                throw new Exception("Stack definition file is not found. Please, give correct path to file.");
-            }
+            var endpoint = WorkspaceInfoModel.GetClusterEndpoint(ClusterName);
+            var memberships = WorkspaceInfoModel.Load().Memberships;
 
+            var fileContent = CmdHelpers.GetFileContent(FilePath, FileFromStdin);
+            if (fileContent == null)
+            {
+                throw new InvalidOperationException("Please provide file content of a new stack");
+            }
             var stackEnvs = CmdHelpers.ParseEnvs(Envs);
             // 1 - swarm stack
             console.WriteLine("Sending deploy request to Portainer...");
-            ApiClient.DeployStack(endpointId: EndpointId,
-                StackName,
-                SwarmId,
-                FilePath,
-                stackEnvs,
-                Debug);
+            ApiClient.DeployStack(endpointId: endpoint.Id,
+                name: StackName,
+                swarmId: endpoint.SwarmId,
+                fileContent: fileContent,
+                env: stackEnvs, memberships,
+                debug: Debug);
             console.WriteLine("Stack deployed.");
         }
     }

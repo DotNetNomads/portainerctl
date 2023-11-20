@@ -1,8 +1,10 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using McMaster.Extensions.CommandLineUtils;
+using PortainerClient.Api;
 using PortainerClient.Api.Model;
 using PortainerClient.Config;
 using RestSharp;
@@ -63,6 +65,18 @@ namespace PortainerClient.Command.Auth
                 Token = tokenInfoResponse.Data.Jwt
             };
             configModel.Save();
+
+            var handler = new JwtSecurityTokenHandler();
+            var jwtSecurityToken = handler.ReadJwtToken(tokenInfoResponse.Data.Jwt);
+            var userId = jwtSecurityToken.Payload["id"].ToString();
+
+            var workspace = new WorkspaceInfoModel
+            {
+                UserId = int.Parse(userId)
+            };
+            workspace.Memberships = new PortainerApiService().GetMemberships(workspace.UserId);
+            workspace.Endpoints = new EndpointsApiService().GetEndpoints();
+            workspace.Save();
         }
 
         /// <inheritdoc />

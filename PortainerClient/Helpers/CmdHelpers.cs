@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using McMaster.Extensions.CommandLineUtils;
 using PortainerClient.Api.Model;
 
@@ -54,10 +56,35 @@ namespace PortainerClient.Helpers
                 }
 
                 var splited = env.Split("=", 2);
-                stackEnvs.Add(new Env {Name = splited[0], Value = splited[1]});
+                stackEnvs.Add(new Env { Name = splited[0], Value = splited[1] });
             }
 
             return stackEnvs;
+        }
+
+        /// <summary>
+        /// Retrieve file content from file or STDIN
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="fileFromStdin"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public static string? GetFileContent(string? filePath, bool? fileFromStdin)
+        {
+            string? fileContent = null;
+            if (!string.IsNullOrWhiteSpace(filePath))
+            {
+                if (!File.Exists(filePath))
+                    throw new Exception("Definition file is not found. Provide valid path.");
+                fileContent = File.ReadAllText(filePath);
+            }
+
+            if (fileFromStdin == null || !fileFromStdin.Value || fileContent != null) return fileContent;
+
+            var sb = new StringBuilder();
+            while (Console.ReadLine() is { } s) sb.AppendLine(s);
+            fileContent = sb.ToString();
+            return fileContent;
         }
     }
 }

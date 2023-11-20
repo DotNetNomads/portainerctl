@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using PortainerClient.Api.Base;
 using PortainerClient.Api.Model;
+using PortainerClient.Config;
 using RestSharp;
 
 namespace PortainerClient.Api
@@ -46,20 +47,29 @@ namespace PortainerClient.Api
         /// <param name="endpointId">Endpoint identifier where to deploy a stack</param>
         /// <param name="name">The stack name</param>
         /// <param name="swarmId">Swarm identifier where to deploy a stack</param>
-        /// <param name="stackFilePath">Path to stack deployment file</param>
+        /// <param name="fileContent">File content of stack</param>
         /// <param name="env">List of the stack envs</param>
+        /// <param name="memberships"></param>
         /// <param name="debug">Print content of request and response</param>
         /// <returns>StackInfo instance for newly deployed stack</returns>
-        public StackInfo DeployStack(int endpointId, string name, string swarmId, string stackFilePath,
-            List<Env> env, bool debug = false) =>
-            Post<StackInfo>("stacks/create/swarm/file",
+        public StackInfo DeployStack(int endpointId, string name, string swarmId, string fileContent,
+            List<Env> env, IEnumerable<Membership> memberships, bool debug = false)
+        {
+            var stack =  Post<StackInfo>($"stacks/create/swarm/string",
                 debug,
                 ("endpointId", endpointId, ParamType.QueryParam),
-                ("file", stackFilePath, ParamType.File),
-                ("SwarmID", swarmId, ParamType.BodyParam),
-                ("Name", name, ParamType.BodyParam),
-                ("Env", JsonSerializer.Serialize(env), ParamType.BodyParam)
-            );
+                (null, new
+                {
+                    StackFileContent = fileContent,
+                    Env = env,
+                    method = "string",
+                    type = "swarm",
+                    SwarmID = swarmId,
+                    Name = name
+                }, ParamType.JsonBody));
+            SetAcl(memberships, debug, stack.ResourceControl.Id);
+            return stack;
+        }
 
         /// <summary>
         /// Update a stack

@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text.Json;
 using PortainerClient.Api.Model;
 using PortainerClient.Config;
@@ -125,6 +127,25 @@ namespace PortainerClient.Api.Base
 
             return new InvalidOperationException(
                 $"Request {resource}: {(errorInfo != null ? $"{errorInfo.message}, details: {errorInfo.details}" : "no information")}");
+        }
+
+        /// <summary>
+        /// Set default ACLs to resource
+        /// </summary>
+        /// <param name="memberships"></param>
+        /// <param name="debug"></param>
+        /// <param name="resourceId"></param>
+        protected void SetAcl(IEnumerable<Membership> memberships, bool debug, int resourceId)
+        {
+            var resourceControlRequest = new ResourceControlRequest
+            {
+                Public = false,
+                AdministratorsOnly = false,
+                Users = Array.Empty<int>(),
+                Teams = memberships.Select(m => m.TeamId).ToArray(),
+            };
+            Put<ResourceControl>($"resource_controls/{resourceId}", debug,
+                ("", resourceControlRequest, ParamType.JsonBody));
         }
     }
 }
