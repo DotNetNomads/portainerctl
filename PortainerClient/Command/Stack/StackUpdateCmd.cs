@@ -1,9 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Text;
 using McMaster.Extensions.CommandLineUtils;
 using PortainerClient.Api;
 using PortainerClient.Helpers;
@@ -13,9 +10,17 @@ namespace PortainerClient.Command.Stack
     /// <summary>
     /// CMD for Stack update operation (updates: completely or partial)
     /// </summary>
-    [Command("update", Description = "Update stack settings (env vars or stack file, or both)")]
+    [Command("update",
+        Description = "Update stack settings (env vars or stack file, or both). Will create new stack if not exist.")]
     public class StackUpdateCmd : BaseApiCommand<StacksApiService>
     {
+        /// <summary>
+        /// Cluster name
+        /// </summary>
+        [Option("--cluster", "Name of the cluster in Portainer UI", CommandOptionType.SingleValue)]
+        [Required]
+        public string ClusterName { get; set; } = null!;
+
         /// <summary>
         /// Stack name
         /// </summary>
@@ -36,7 +41,7 @@ namespace PortainerClient.Command.Stack
         [Option("--in",
             "Read updated stack definition file from stdin, can be used as an alternative to --file (optional)",
             CommandOptionType.NoValue, ShortName = "i")]
-        public bool FileFromStdin { get; set; } = false;
+        public bool? FileFromStdin { get; set; } = false;
 
 
         /// <summary>
@@ -68,32 +73,22 @@ namespace PortainerClient.Command.Stack
             var stack = ApiClient.GetStacks(Debug).FirstOrDefault(s => s.Name == StackName);
             if (stack == null)
             {
-                throw new Exception("Stack with this name is not found");
+                Console.WriteLine("The stack for an update is not found. Trying to create a new one...");
+                new StackDeployCmd
+                {
+                    Debug = Debug,
+                    Envs = Envs,
+                    ClusterName = ClusterName,
+                    FilePath = FilePath,
+                    StackName = StackName,
+                    FileFromStdin = FileFromStdin
+                }.OnExecute(app, console);
+                return;
             }
 
             var stackId = stack.Id;
             // check file
-            string? fileContent = null;
-            if (!string.IsNullOrWhiteSpace(FilePath))
-            {
-                if (!File.Exists(FilePath))
-                {
-                    throw new Exception("Definition file is not found. Provide valid path.");
-                }
-
-                fileContent = File.ReadAllText(FilePath);
-            }
-
-            if (FileFromStdin && fileContent == null)
-            {
-                var sb = new StringBuilder();
-                while (Console.ReadLine() is { } s)
-                {
-                    sb.AppendLine(s);
-                }
-
-                fileContent = sb.ToString();
-            }
+            var fileContent = CmdHelpers.GetFileContent(FilePath, FileFromStdin);
 
             var envs = CmdHelpers.ParseEnvs(Envs);
             // if file content not provided (we use old file and change only provided env vars)

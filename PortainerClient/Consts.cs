@@ -9,5 +9,9 @@ namespace PortainerClient
         /// Name of application config file
         /// </summary>
         public const string ConfigFileName = ".portainerctl.json";
+        /// <summary>
+        /// Name of application workspace info file
+        /// </summary>
+        public const string WorkspaceInfoFileName = ".portainerctl_workspace_info.json";
     }
 }

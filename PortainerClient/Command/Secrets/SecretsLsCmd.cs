@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
 using PortainerClient.Api;
+using PortainerClient.Config;
 using YamlDotNet.Serialization;
 
 namespace PortainerClient.Command.Configs;
@@ -11,19 +12,20 @@ namespace PortainerClient.Command.Configs;
 /// CMD command for Secrets list operation
 /// </summary>
 [Command(Name = "ls", Description = "List all secrets")]
-public class SecretsLsCmd: BaseApiCommand<EndpointsApiService>
+public class SecretsLsCmd : BaseApiCommand<EndpointsApiService>
 {
     /// <summary>
-    /// Endpoint identifier
+    /// Cluster name
     /// </summary>
-    [Argument(order: 0, name: "endpoint-id", description: "ID of endpoint used to deploy (get it from Portainer)")]
+    [Argument(order: 0, name: "cluster-name", description: "Name of the cluster in Portainer UI")]
     [Required]
-    public int EndpointId { get; set; }
+    public string ClusterName { get; set; } = null!;
 
     /// <inheritdoc />
     protected override void Do(CommandLineApplication app, IConsole console)
     {
-        var list = ApiClient.GetSecrets(EndpointId).Select(c=> c.Spec);
+        var list = ApiClient.GetSecrets(WorkspaceInfoModel.GetClusterEndpoint(ClusterName).Id)
+            .Select(c => c.Spec);
         var yamlSerializer = new Serializer();
         Console.WriteLine("--- SECRETS ---");
         Console.WriteLine(yamlSerializer.Serialize(list));

@@ -1,5 +1,4 @@
 using McMaster.Extensions.CommandLineUtils;
-using PortainerClient.Command.Stack;
 using PortainerClient.Helpers;
 
 namespace PortainerClient.Command.Configs;
@@ -8,7 +7,7 @@ namespace PortainerClient.Command.Configs;
 /// CMD command for Configs
 /// </summary>
 [Command(Name = "configs", Description = "Docker Swarm Configs management commands")]
-[Subcommand(typeof(ConfigsLsCmd))]
+[Subcommand(typeof(ConfigsLsCmd), typeof(ConfigsCreateCmd))]
 public class ConfigsCmd : ICommand
 {
     /// <inheritdoc />
