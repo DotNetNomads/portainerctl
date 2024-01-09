@@ -21,7 +21,7 @@
   <ItemGroup>
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="4.1.0" />
     <PackageReference Include="RestSharp" Version="110.2.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.1.2" />
     <PackageReference Include="YamlDotNet" Version="13.4.0" />
   </ItemGroup>
 
